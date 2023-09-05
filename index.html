@@ -39,6 +39,7 @@
             //setupSubscriptions();
             await getCurrent();
         } catch(e) {
+            document.getElementById('error').textContent = e.message;
             content.textContent = e.message;
             xapistatus.textContent = "error getting jsxapi object";
         }
