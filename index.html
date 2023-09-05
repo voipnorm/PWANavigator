@@ -36,7 +36,7 @@
             unique_id = createPersistentCookie();
             content.textContent = "Navigator ID: " + unique_id;
             setupSubscriptions();
-            getCurrent();
+            await getCurrent();
         } catch(e) {
             content.textContent = e.message;
             xapistatus.textContent = "error getting jsxapi object";
