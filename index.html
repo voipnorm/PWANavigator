@@ -24,6 +24,7 @@
         <p>Temperature: <span id="temperature">Loading...</span> &deg;C</p>
         <p>Humidity: <span id="humidity">Loading...</span>%</p>
         <p>Air Quality: <span id="airQuality">Loading...</span></p>
+        <p>Errors: <span id="error">Loading...</span> </p>
     </div>
 </div>
 
@@ -80,6 +81,7 @@
             return
         }catch(e){
             console.error(e);
+            document.getElementById('error').textContent = e;
         }
     }
 
