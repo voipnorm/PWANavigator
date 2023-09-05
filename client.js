@@ -4,15 +4,15 @@
 async function init() {
     try {
         xapi = await getXAPI();
-        xapistatus.textContent = "jsxapi available";
+        //xapistatus.textContent = "jsxapi available";
         unique_id = createPersistentCookie();
-        content.textContent = "Navigator ID: " + unique_id;
-        setupSubscriptions();
+        //content.textContent = "Navigator ID: " + unique_id;
+        //setupSubscriptions();
         getAnaCurrent();
-        updateSerial();
+        //updateSerial();
     } catch(e) {
-        content.textContent = e.message;
-        xapistatus.textContent = "error getting jsxapi object";
+        //content.textContent = e.message;
+        //xapistatus.textContent = "error getting jsxapi object";
     }
 }
 
@@ -39,124 +39,6 @@ function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
-    });
-}
-
-//Event handlers for button presses below.
-//Xapi Command to set the LedControl Color to Green
-const greenButton = document.getElementById('greenButton');
-const content = document.getElementById('content');
-const xapistatus = document.getElementById('xapistatus');
-greenButton.addEventListener('click', async function(e) {
-    try {
-        //Example of an xapi xCommand
-        xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Green' });
-    } catch(e) {
-        content.textContent = e.message;
-    }
-});
-
-//Xapi Command to set the LedControl Color to Yellow
-const yellowButton = document.getElementById('yellowButton');
-yellowButton.addEventListener('click', async function(e) {
-    try {
-        //Example of an xapi xCommand
-        xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Yellow' });
-    } catch(e) {
-        content.textContent = e.message;
-    }
-});
-
-//Xapi Command to set the LedControl Color to Red
-const redButton = document.getElementById('redButton');
-redButton.addEventListener('click', async function(e) {
-    try {
-        //Example of an xapi xCommand
-        xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Red' });
-    } catch(e) {
-        content.textContent = e.message;
-    }
-});
-
-const manualButton = document.getElementById('manualButton');
-manualButton.addEventListener('click', async function(e) {
-    try {
-        //Example xapi xConfiguration
-        xapi.Config.UserInterface.LedControl.Mode.set('Manual');
-        content.textContent = `Set Led Control to Manual`;
-
-    } catch(e) {
-        content.textContent = e.message;
-    }
-});
-
-const autoButton = document.getElementById('autoButton');
-autoButton.addEventListener('click', async function(e) {
-    try {
-        xapi.Config.UserInterface.LedControl.Mode.set('Auto');
-        content.textContent = `Set Led Control to Auto - LED will be set to Off if Calendar is not setup`;
-
-    } catch(e) {
-        content.textContent = e.message;
-    }
-});
-
-//Currently the Audio xAPI is not enabled for Persistent WebApp Mode
-//Attempts to toggle mute, expected to fail.
-const failButton = document.getElementById('failCase');
-failButton.addEventListener('click', async function(e) {
-    try {
-        xapi.Command.Audio.Volume.ToggleMute();
-
-    } catch(e) {
-        content.textContent = e.message;
-    }
-
-});
-
-//Gets the current xStatus of LedControl Color and displays on the page.
-function getCurrent() {
-    //Example xapi xStatus
-    xapi.Status.UserInterface.LedControl.Color.get().then((color) => {
-        setLedColor(color)
-    })
-        .catch(function(error) {
-            console.log(error);
-        });
-}
-
-function setLedColor(color) {
-    console.log("COLOR: " + color)
-    switch(color) {
-        case 'Green':
-        case 'Yellow':
-        case 'Red':
-            document.getElementById('ledRect').style.fill = color;
-            break;
-        case 'Off':
-            document.getElementById('ledRect').style.fill = 'black';
-            break;
-        default:
-            console.log("Unexpected color")
-            document.getElementById('ledRect').style.fill = 'grey';
-    }
-}
-
-//Gets the Serial number of the device using the peripheralSerial replacement tag
-function updateSerial() {
-    const params = new URLSearchParams(window.location.search);
-    const serialNumber = params.get('serialnumber')
-    var serialResult;
-    serialNumber === null ? serialResult = 'peripheralSerial not set' : serialResult = serialNumber
-
-    document.getElementById('deviceSerial').innerHTML = "Device Serial: " + serialResult;
-}
-
-//Gets the current xStatus of LedControl Color and displays on the page.
-function setupSubscriptions() {
-    //Example xapi xStatus
-    xapi.Status.UserInterface.LedControl.Color.on(color => {
-        setLedColor(color)
     });
 }
 
