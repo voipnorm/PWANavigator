@@ -32,16 +32,14 @@
 <script>
     async function init() {
         try {
-            let xapi = await getXAPI();
-            //let xapistatus.textContent = "jsxapi available";
+            xapi = await getXAPI();
+
             let unique_id = createPersistentCookie();
-            //content.textContent = "Navigator ID: " + unique_id;
-            //setupSubscriptions();
+
             await getCurrent();
         } catch(e) {
             document.getElementById('error').textContent = e.message;
-            //content.textContent = e.message;
-            //xapistatus.textContent = "error getting jsxapi object";
+
         }
     }
 
