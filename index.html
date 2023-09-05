@@ -35,7 +35,7 @@
             xapistatus.textContent = "jsxapi available";
             unique_id = createPersistentCookie();
             content.textContent = "Navigator ID: " + unique_id;
-            setupSubscriptions();
+            //setupSubscriptions();
             await getCurrent();
         } catch(e) {
             content.textContent = e.message;
