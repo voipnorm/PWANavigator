@@ -32,7 +32,7 @@
 <script>
     async function init() {
         try {
-            xapi = await getXAPI();
+            let xapi = await getXAPI();
 
             let unique_id = createPersistentCookie();
 
