@@ -30,15 +30,12 @@
 
 
 <script>
-    var xapi;
-    var xapistatus;
+
     async function init() {
         try {
             xapi = await getXAPI();
-
             let unique_id = createPersistentCookie();
-
-            await getCurrent();
+            getCurrent();
         } catch(e) {
             document.getElementById('error').textContent = e.message;
 
