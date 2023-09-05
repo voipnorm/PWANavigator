@@ -86,14 +86,14 @@
     window.onload = async function() {
         init();
     };
-     async function updateAna(){
+     function updateAna(){
          // Example JavaScript code to update the readings dynamically
          const temperatureElement = document.getElementById('temperature');
          const humidityElement = document.getElementById('humidity');
          const airQualityElement = document.getElementById('airQuality');
 
          // Simulated data for demonstration
-         const roomTemperature = await xapi.Status.RoomAnalytics.AmbientTemperature.get(); // in Celsius
+         const roomTemperature = xapi.Status.RoomAnalytics.AmbientTemperature.get()// in Celsius
          const roomHumidity = 60; // in percentage
          const roomAirQuality = 'Good';
 
