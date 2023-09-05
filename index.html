@@ -55,20 +55,23 @@
 <div class="container">
     <div class="center">
         <h2 style="text-align:center;">Set LED color using jsxapi:</h2>
-        <button id="greenButton" style="background-color:green;">Green</button>
-        <button id="yellowButton" style="background-color:yellow;">Yellow</button>
-        <button id="redButton" style="background-color:red;">Red</button>
-        <button id="manualButton" style="background-color:orange;">Manual</button>
-        <button id="autoButton" style="background-color:orange;">Auto</button>
-        <button id="failCase" style="background-color:orange;">Fail Case</button>
+        <div class="reading">
+            <span>Temperature:</span>
+            <span id="temperature">-</span>
+        </div>
+        <div class="reading">
+            <span>Humidity:</span>
+            <span id="humidity">-</span>
+        </div>
+        <div class="reading">
+            <span>Air Quality:</span>
+            <span id="airQuality">-</span>
+        </div>
+
     </div>
 </div>
 
-<div class="ledStrip">
-    <svg width="100%" height="80">
-        <rect id="ledRect" width="100%" height="100" style="stroke-width:3;stroke:rgb(0,0,0)" />
-    </svg>
-</div>
+
 </body>
 <script>
     //Initialize the xAPI on page load to make the xapi object available.
@@ -77,161 +80,31 @@
     async function init() {
         try {
             xapi = await getXAPI();
-            xapistatus.textContent = "jsxapi available";
-            unique_id = createPersistentCookie();
-            content.textContent = "Navigator ID: " + unique_id;
-            setupSubscriptions();
-            getCurrent();
-            updateSerial();
+            updateAna();
         } catch(e) {
-            content.textContent = e.message;
-            xapistatus.textContent = "error getting jsxapi object";
+
         }
     }
 
     window.onload = async function() {
         init();
     };
+     function updateAna(){
+         // Example JavaScript code to update the readings dynamically
+         const temperatureElement = document.getElementById('temperature');
+         const humidityElement = document.getElementById('humidity');
+         const airQualityElement = document.getElementById('airQuality');
 
-    //Persistent Cookie example for Unique Navigator ID:
-    //Searches for an existing cookie, if not found generates a new UUID and stores it.
-    function createPersistentCookie() {
-        value_or_null = (document.cookie.match(/^(?:.*;)?\s*uniqueId\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1]
-        var ret_val;
-        if(value_or_null == null) {
-            var expiration_date = new Date();
-            var cookie_string = '';
-            expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-            cookie_string = "uniqueId=" + uuidv4() +"; path=/; expires=" + expiration_date.toUTCString();
-            document.cookie = cookie_string;
-        }
-        return (document.cookie.match(/^(?:.*;)?\s*uniqueId\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1];
-    }
+         // Simulated data for demonstration
+         const roomTemperature = 25.5; // in Celsius
+         const roomHumidity = 60; // in percentage
+         const roomAirQuality = 'Good';
 
-    function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    //Event handlers for button presses below.
-    //Xapi Command to set the LedControl Color to Green
-    const greenButton = document.getElementById('greenButton');
-    const content = document.getElementById('content');
-    const xapistatus = document.getElementById('xapistatus');
-    greenButton.addEventListener('click', async function(e) {
-        try {
-            //Example of an xapi xCommand
-            xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Green' });
-        } catch(e) {
-            content.textContent = e.message;
-        }
-    });
-
-    //Xapi Command to set the LedControl Color to Yellow
-    const yellowButton = document.getElementById('yellowButton');
-    yellowButton.addEventListener('click', async function(e) {
-        try {
-            //Example of an xapi xCommand
-            xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Yellow' });
-        } catch(e) {
-            content.textContent = e.message;
-        }
-    });
-
-    //Xapi Command to set the LedControl Color to Red
-    const redButton = document.getElementById('redButton');
-    redButton.addEventListener('click', async function(e) {
-        try {
-            //Example of an xapi xCommand
-            xapi.Command.UserInterface.LedControl.Color.Set({ Color: 'Red' });
-        } catch(e) {
-            content.textContent = e.message;
-        }
-    });
-
-    const manualButton = document.getElementById('manualButton');
-    manualButton.addEventListener('click', async function(e) {
-        try {
-            //Example xapi xConfiguration
-            xapi.Config.UserInterface.LedControl.Mode.set('Manual');
-            content.textContent = `Set Led Control to Manual`;
-
-        } catch(e) {
-            content.textContent = e.message;
-        }
-    });
-
-    const autoButton = document.getElementById('autoButton');
-    autoButton.addEventListener('click', async function(e) {
-        try {
-            xapi.Config.UserInterface.LedControl.Mode.set('Auto');
-            content.textContent = `Set Led Control to Auto - LED will be set to Off if Calendar is not setup`;
-
-        } catch(e) {
-            content.textContent = e.message;
-        }
-    });
-
-    //Currently the Audio xAPI is not enabled for Persistent WebApp Mode
-    //Attempts to toggle mute, expected to fail.
-    const failButton = document.getElementById('failCase');
-    failButton.addEventListener('click', async function(e) {
-        try {
-            xapi.Command.Audio.Volume.ToggleMute();
-
-        } catch(e) {
-            content.textContent = e.message;
-        }
-
-    });
-
-    //Gets the current xStatus of LedControl Color and displays on the page.
-    function getCurrent() {
-        //Example xapi xStatus
-        xapi.Status.UserInterface.LedControl.Color.get().then((color) => {
-            setLedColor(color)
-        })
-            .catch(function(error) {
-                console.log(error);
-            });
-    }
-
-    function setLedColor(color) {
-        console.log("COLOR: " + color)
-        switch(color) {
-            case 'Green':
-            case 'Yellow':
-            case 'Red':
-                document.getElementById('ledRect').style.fill = color;
-                break;
-            case 'Off':
-                document.getElementById('ledRect').style.fill = 'black';
-                break;
-            default:
-                console.log("Unexpected color")
-                document.getElementById('ledRect').style.fill = 'grey';
-        }
-    }
-
-    //Gets the Serial number of the device using the peripheralSerial replacement tag
-    function updateSerial() {
-        const params = new URLSearchParams(window.location.search);
-        const serialNumber = params.get('serialnumber')
-        var serialResult;
-        serialNumber === null ? serialResult = 'peripheralSerial not set' : serialResult = serialNumber
-
-        document.getElementById('deviceSerial').innerHTML = "Device Serial: " + serialResult;
-    }
-
-    //Gets the current xStatus of LedControl Color and displays on the page.
-    function setupSubscriptions() {
-        //Example xapi xStatus
-        xapi.Status.UserInterface.LedControl.Color.on(color => {
-            setLedColor(color)
-        });
-    }
+         // Update the HTML with the actual readings
+         temperatureElement.textContent = roomTemperature + '°C';
+         humidityElement.textContent = roomHumidity + '%';
+         airQualityElement.textContent = roomAirQuality;
+     }
 </script>
 <script type="text/javascript"></script>
 </html>
