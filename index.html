@@ -93,7 +93,7 @@
          const airQualityElement = document.getElementById('airQuality');
 
          // Simulated data for demonstration
-         await xapi.Status.Peripherals.ConnectedDevice[1].RoomAnalytics.AmbientTemperature.get()
+         xapi.Status.Peripherals.ConnectedDevice[1].RoomAnalytics.AmbientTemperature.get()
              .then((data)=>{
                  const roomTemperature = data;
                  const roomHumidity = 60; // in percentage
